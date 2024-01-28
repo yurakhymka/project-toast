@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import Button from '../Button';
-import Toast from '../Toast';
+import ToastShelf from '../ToastShelf';
 
 import styles from './ToastPlayground.module.css';
 
@@ -10,10 +10,14 @@ const VARIANT_OPTIONS = ['notice', 'warning', 'success', 'error'];
 function ToastPlayground() {
   const [message, setMessage] = useState('');
   const [notice, setNotice] = useState('notice');
-  const [toastIsVisible, setToastIsVisible] = useState(false);
+  const [toastCollection, setToastCollection] = useState([]);
 
-  const handleButtonClick = () => {
-    setToastIsVisible(true);
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    
+    if (message.trim().length) {
+      addToast();
+    }
   }
 
   const handleMessageChange = (e) => {
@@ -24,9 +28,30 @@ function ToastPlayground() {
     setNotice(e.target.value);
   };
 
-  const onToastClose = () => {
-    setToastIsVisible(false);
+  const addToast = () => {
+    const copyToastCollection = structuredClone(toastCollection);
+    const toast = {
+      message: message,
+      variant: notice,
+      id: crypto.randomUUID(),
+    }
+
+    copyToastCollection.push(toast);
+    setToastCollection(copyToastCollection);
+    resetToastState();
   }
+
+  const resetToastState = () => {
+    setNotice('notice');
+    setMessage('');
+  }
+
+  const removeToast = (id) => {
+    const copyToastCollection = structuredClone(toastCollection);
+    const filteredCollection = copyToastCollection.filter(item => item.id !== id);
+  
+    setToastCollection(filteredCollection);
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -34,10 +59,10 @@ function ToastPlayground() {
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
-      {toastIsVisible && 
-        <Toast message={message} variant={notice} onClose={onToastClose}/>
+      {toastCollection.length > 0 && 
+        <ToastShelf toastCollection={toastCollection} onRemoveToast={removeToast}/>
       }
-      <div className={styles.controlsWrapper}>
+      <form onSubmit={handleFormSubmit} className={styles.controlsWrapper}>
         <div className={styles.row}>
           <label
             htmlFor="message"
@@ -81,10 +106,10 @@ function ToastPlayground() {
           <div
             className={`${styles.inputWrapper} ${styles.radioWrapper}`}
           >
-            <Button onClick={handleButtonClick}>Pop Toast!</Button>
+            <Button>Pop Toast!</Button>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   );
 }
