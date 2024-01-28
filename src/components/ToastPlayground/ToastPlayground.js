@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 import Button from '../Button';
 import ToastShelf from '../ToastShelf';
+import { ToastContext } from '../ToastProvider';
 
 import styles from './ToastPlayground.module.css';
 
@@ -10,13 +11,17 @@ const VARIANT_OPTIONS = ['notice', 'warning', 'success', 'error'];
 function ToastPlayground() {
   const [message, setMessage] = useState('');
   const [notice, setNotice] = useState('notice');
-  const [toastCollection, setToastCollection] = useState([]);
+  const { addToast } = useContext(ToastContext);
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
-    
+
     if (message.trim().length) {
-      addToast();
+      addToast({
+        message: message,
+        notice: notice,
+      });
+      resetState();
     }
   }
 
@@ -28,30 +33,10 @@ function ToastPlayground() {
     setNotice(e.target.value);
   };
 
-  const addToast = () => {
-    const copyToastCollection = structuredClone(toastCollection);
-    const toast = {
-      message: message,
-      variant: notice,
-      id: crypto.randomUUID(),
-    }
-
-    copyToastCollection.push(toast);
-    setToastCollection(copyToastCollection);
-    resetToastState();
-  }
-
-  const resetToastState = () => {
+  const resetState = () => {
     setNotice('notice');
     setMessage('');
   }
-
-  const removeToast = (id) => {
-    const copyToastCollection = structuredClone(toastCollection);
-    const filteredCollection = copyToastCollection.filter(item => item.id !== id);
-  
-    setToastCollection(filteredCollection);
-  };
 
   return (
     <div className={styles.wrapper}>
@@ -59,9 +44,7 @@ function ToastPlayground() {
         <img alt="Cute toast mascot" src="/toast.png" />
         <h1>Toast Playground</h1>
       </header>
-      {toastCollection.length > 0 && 
-        <ToastShelf toastCollection={toastCollection} onRemoveToast={removeToast}/>
-      }
+      <ToastShelf/>
       <form onSubmit={handleFormSubmit} className={styles.controlsWrapper}>
         <div className={styles.row}>
           <label
@@ -114,4 +97,4 @@ function ToastPlayground() {
   );
 }
 
-export default ToastPlayground;
+export default React.memo(ToastPlayground);
