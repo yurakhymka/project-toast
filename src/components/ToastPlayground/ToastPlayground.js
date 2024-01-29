@@ -1,8 +1,9 @@
-import React, { useState, useContext, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 
 import Button from '../Button';
 import ToastShelf from '../ToastShelf';
 import { ToastContext } from '../ToastProvider';
+import { useEscapeKey } from '../../hooks/hooks';
 
 import styles from './ToastPlayground.module.css';
 
@@ -13,13 +14,7 @@ function ToastPlayground() {
   const [notice, setNotice] = useState('notice');
   const { addToast, removeAllToast } = useContext(ToastContext);
 
-  useEffect(() => {
-    document.addEventListener('keydown', handleEscKeydown);
-
-    return () => {
-     document.removeEventListener('keydown', handleEscKeydown);
-    }
-  }, []);
+  useEscapeKey();
 
   const handleFormSubmit = (e) => {
     e.preventDefault();
@@ -44,12 +39,6 @@ function ToastPlayground() {
   const resetState = () => {
     setNotice('notice');
     setMessage('');
-  }
-
-  const handleEscKeydown = (e) => {
-    if (e.key === 'Escape') {
-      removeAllToast();
-    }
   }
 
   return (
