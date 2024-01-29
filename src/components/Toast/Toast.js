@@ -24,7 +24,6 @@ function Toast({ id, message, variant }) {
   const { removeToast } = useContext(ToastContext);
 
   const handleCloseButton = () => {
-    console.log()
     removeToast(id);
   }
   return (
@@ -34,8 +33,14 @@ function Toast({ id, message, variant }) {
       </div>
       <p className={styles.content}>
         {message}
+        <div class="VisuallyHidden_wrapper">
+          {variant} - {message}
+        </div>
       </p>
-      <button className={styles.closeButton}>
+      <button
+        className={styles.closeButton}
+        aria-label="Dismiss message"
+        aria-live="off">
         <X size={24} onClick={handleCloseButton}/>
         <VisuallyHidden>Dismiss message</VisuallyHidden>
       </button>

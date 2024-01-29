@@ -25,8 +25,12 @@ function ToastProvider({children}) {
     setToastCollection(filteredCollection);
   };
 
+  const removeAllToast = () => {
+    setToastCollection([]);
+  };
+
   return <ToastContext.Provider 
-    value={{ toastCollection, addToast, removeToast }}>{children}</ToastContext.Provider>;
+    value={{ toastCollection, addToast, removeToast, removeAllToast }}>{children}</ToastContext.Provider>;
 }
 
 export default ToastProvider;
