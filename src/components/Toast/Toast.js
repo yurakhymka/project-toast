@@ -33,9 +33,7 @@ function Toast({ id, message, variant }) {
       </div>
       <p className={styles.content}>
         {message}
-        <div class="VisuallyHidden_wrapper">
-          {variant} - {message}
-        </div>
+        <VisuallyHidden>{variant} - {message}</VisuallyHidden>
       </p>
       <button
         className={styles.closeButton}
