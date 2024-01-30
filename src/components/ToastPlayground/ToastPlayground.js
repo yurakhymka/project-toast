@@ -11,7 +11,7 @@ const VARIANT_OPTIONS = ['notice', 'warning', 'success', 'error'];
 
 function ToastPlayground() {
   const [message, setMessage] = useState('');
-  const [notice, setNotice] = useState('notice');
+  const [notice, setNotice] = useState(VARIANT_OPTIONS[0]);
   const { addToast, removeAllToast } = useContext(ToastContext);
 
   useEscapeKey();
@@ -37,7 +37,7 @@ function ToastPlayground() {
   };
 
   const resetState = () => {
-    setNotice('notice');
+    setNotice(VARIANT_OPTIONS[0]);
     setMessage('');
   }
 
